@@ -451,13 +451,13 @@ namespace diseasedataarrange
 
             if (GenerateDictionaryJSON)
             {
-                var file = GetOutputFile(@"ajson\", fileName, ".json");
+                var file = GetOutputFile(@"djson\", fileName, ".json");
                 WirteDJSONFile(e, list, file);
             }
 
             if (GenerateArrayJSON)
             {
-                var file = GetOutputFile(@"djson\", fileName, ".json");
+                var file = GetOutputFile(@"ajson\", fileName, ".json");
                 WirteAJSONFile(e, list, file);
             }
         }
