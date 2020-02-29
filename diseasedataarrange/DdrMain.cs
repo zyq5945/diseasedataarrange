@@ -156,7 +156,7 @@ namespace diseasedataarrange
             GenerateAllFields = gaf != "0";
             WordReplace = wordReplase;
             CSVIndexs = csvIndexs;
-            DateTimeFormat = dateTimeFmt;
+            DateTimeFormat = "\"{0:" + dateTimeFmt + "}\"";
             CSVSeparators = csvSeparators.ToArray();
             return true;
         }
@@ -549,35 +549,10 @@ namespace diseasedataarrange
                 list.ForEach(x =>
                 {
                     var vals = DdrHelp.GetValuseByProperties(x, props);
-
-                    if (timeIdx >= 0)
-                    {
-                        var time = vals[timeIdx] as DateTime?;
-                        if (time != null)
-                        {
-                            vals[timeIdx] = string.Format("\"{0}\"", time.Value.ToString(this.DateTimeFormat));
-                        }
-                    }
-                    if (isJson)
-                    {
-                        Array.ForEach(nameIdx, y =>
-                        {
-                            if (y >= 0)
-                            {
-                                vals[y] = string.Format("\"{0}\"", vals[y]);
-                            }
-                        });
-
-                        for (int i = 0; i < vals.Length; i++)
-                        {
-                            if (vals[i] == null)
-                            {
-                                vals[i] = "null";
-                            }
-                        }
-                    }
+                    PrepareVals(isJson, nameIdx, timeIdx, vals);
 
                     var line = funcLine(names, vals);
+
                     if (isJson && ++idx == len)
                     {
                         line = line.TrimEnd(',');
@@ -595,6 +570,34 @@ namespace diseasedataarrange
             }
         }
 
+        private void PrepareVals(bool isJson, int[] nameIdx, int timeIdx, object[] vals)
+        {
+            if (timeIdx >= 0)
+            {
+                var time = vals[timeIdx] as DateTime?;
+                if (time != null)
+                {
+                    vals[timeIdx] = string.Format(DateTimeFormat, time.Value);
+                }
+            }
+            if (isJson)
+            {
+                Array.ForEach(nameIdx, y =>
+                {
+                    if (y >= 0)
+                    {
+                        vals[y] = string.Format("\"{0}\"", vals[y]);
+                    }
+                });
 
+                for (int i = 0; i < vals.Length; i++)
+                {
+                    if (vals[i] == null)
+                    {
+                        vals[i] = "null";
+                    }
+                }
+            }
+        }
     }
 }

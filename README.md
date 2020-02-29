@@ -73,7 +73,32 @@ mono "/xxxx/path to/diseasedataarrange.exe" "/xxxx/path to/DXYArea.csv" "/xxxx/p
 ```
 
 
-## 4.生成文件的各字段说明
+## 4.生成文件的说明
+
+### 4.1 文件目录说明
+
+| 目录名 |  说明 |
+|---|---|
+|  OutputDir/csv | 生成CSV文件目录 |
+|  OutputDir/ajson | 生成字典形式JSON文件目录 |
+|  OutputDir/djson | 生成数组形式JSON文件目录 |
+|  ChildDetail | 各个子按日期升序排序的详细情况目录，其下是各父名称目录，父目录下才是子文件 |
+|  ParentDetail | 各个父按日期升序排序的详细情况目录 |
+|  ParentLastChildren | 各个子按日期降序排序的最后更新情况目录，其下是各父名称目录，父目录下才是子文件 |
+
+
+### 4.2 固定文件名称说明
+
+| 文件名 |  说明 |
+|---|---|
+|  Total | 最后更新汇总的情况 |
+|  LastParents | 最后更新的所有父情况 |
+|  LastChildren | 最后更新的所有子情况 |
+|  AllRecords | 转换的原始记录 |
+|  AllParents | 所有的子情况 |
+|  AllChildren | 所有的父情况 |
+
+### 4.3 文件的各字段说明
 
 注：标准化是指将值缩放到浮点数是0-1之间的值
 
@@ -135,10 +160,13 @@ mono "/xxxx/path to/diseasedataarrange.exe" "/xxxx/path to/DXYArea.csv" "/xxxx/p
 
 ## 5.程序使用的一些注意事项
 
-mono环境下使用Linq对第二字段进行排序会有问题，而且程序在mono的运行效率会比在windows的Net环境要慢一些。
+- mono环境下使用Linq对第二字段进行排序会有问题，而且程序在mono的运行效率会比在windows的Net环境要慢一些
 
+- 中文有多音字的情况，比如重庆的“重”可能会按读音zhòng来进行排序，所以排序会有些问题
 
-中文有多音字的情况，比如重庆的“重”可能会按读音zhòng来进行排序，所以排序会有些问题。
+- 若出现文字乱码的情况，请把CSV文件改成带BOM标记的UTF8格式文本文件
+
+- 解析数据行错误很大可能性是因为时间格式无法解析，请改成yyyy-MM-dd HH:mm:ss.fff类似格式
 
 ## 6.一些个人的DXY-COVID-19数据分析心得
 
