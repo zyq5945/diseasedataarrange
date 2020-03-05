@@ -113,6 +113,48 @@ namespace diseasedataarrange
             return props.Select(x => x.GetValue(t, null)).ToArray();
         }
 
+        public static string FormatString(string[] names, string separator, string start, string end, bool allQuo, params int[] quoIdxs)
+        {
+            var fmt = CreateStringFormat(names.Length, separator, start, end, allQuo, quoIdxs);            
+            return string.Format(fmt, names);
+        }
+
+        public static string CreateStringFormat(int len, string separator, string start, string end, bool allQuo, params int[] quoIdxs)
+        {
+            StringBuilder text = new StringBuilder(len * 10);
+
+            text.Append(start);
+
+            for (var i = 0; i < len; i++)
+            {
+                var ss = allQuo || quoIdxs.Contains(i) ? "\"" : "";
+                var sd = i == 0 ? "" : separator;
+                text.AppendFormat("{3}{4}{0}{1}{2}{4}", "{", i, "}", sd, ss);
+            }
+
+            text.Append(end);
+
+            return text.ToString();
+        }
+
+        public  static string CreateStringFormat(string[] names, string separator, string start, string end, bool allQuo, params int[] quoIdxs)
+        {
+            int len = names.Length;
+
+            StringBuilder text = new StringBuilder(len * 28);
+
+            text.Append(start);
+
+            for (var i = 0; i < len; i++)
+            {
+                var ss = allQuo || quoIdxs.Contains(i) ? "\"" : "";
+                var sd = i == 0 ? "" : separator;
+                text.AppendFormat("{3}\"{5}\":{4}{0}{1}{2}{4}", "{", i, "}", sd, ss, names[i]);
+            }
+            text.Append(end);
+
+            return text.ToString();
+        }
     }
     
 }

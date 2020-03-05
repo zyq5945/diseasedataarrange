@@ -1,13 +1,15 @@
-﻿
+
 ## 1.介绍说明
 
 diseasedataarrange是一个对疾病数据进行整理的C#控制台程序，在windows系统运行需要安装Net4.0，其他系统请安装mono运行环境。
 
 ## 2.运行方法
 
-目前是针对[DXY-COVID-19-Data](https://github.com/BlankerL/DXY-COVID-19-Data)的数据写的默认配置项，将该项目的最新的DXYArea.csv文件拷贝到程序所在目录，双击程序运行完成后，在程序目录下csv目录下产生整理后的csv文件。
+目前是针对BlankerL的[DXY-COVID-19-Data](https://github.com/BlankerL/DXY-COVID-19-Data)的数据写的默认配置项，将该项目的最新的DXYArea.csv文件拷贝到程序所在目录，双击程序运行完成后，在程序目录下csv目录下产生整理后的csv文件。
 
-如若需要针对其他数据进行整理，请参考配置选项的configuration/appSettings和configuration/wordReplace的字段说明进行修改
+若需要生成JSON文件，请参考配置选项的configuration/appSettings/GenerateDictionaryJSON和configuration/appSettings/GenerateArrayJSON进行修改。
+
+如若需要针对其他数据进行整理，请参考配置选项的configuration/appSettings和configuration/wordReplace的字段说明进行修改。
 
 ### 2.1带参数的运行方式
 
@@ -170,9 +172,8 @@ mono "/xxxx/path to/diseasedataarrange.exe" "/xxxx/path to/DXYArea.csv" "/xxxx/p
 
 ## 6.一些个人的DXY-COVID-19数据分析心得
 
-康复率，死亡率和政治治疗率需要合在一起考虑，若事件结束后最终康复率教高，早期阶段数据少会造成数据有很大波动，中间阶段死亡率会逐步上升，死亡率会缓慢上升，正在治疗率会逐步下降。以死亡率在中期阶段大数据情况下，这会使得较少数据“噪点”数据就出现较大数值变动成为历史，就会出现缓慢上升这个前提条件来看，整体而言，患者多的地区较容易出现高死亡率，北方比南方较容易出现较高死亡率，越冷就越如此，这和[最终统计的2003年北京的SARS的死亡率](https://zyq5945.github.io/zyq5945/blog_10.html)比广东的差是一致的。
+[《使用OriginLab的Boltzmann模型拟合仿真预测中国COVID-19(2019-nCov)疫情康复情况》](https://zyq5945.github.io/zyq5945/blog_13.html)
 
-瞎琢磨尝试用安徽省的康复数标准化数据进行Boltzmann数据拟合，还挺符合的。
 
 ## 7.LICENSE
 

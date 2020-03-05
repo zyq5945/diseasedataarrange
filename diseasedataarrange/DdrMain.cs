@@ -11,6 +11,8 @@ using DdrRowList = System.Collections.Generic.List<diseasedataarrange.DdrData>;
 using DdrGroup = System.Tuple<diseasedataarrange.DdrRowGroup, System.Collections.Generic.List<diseasedataarrange.DdrData>>;
 using DdrGroupList = System.Collections.Generic.List<System.Tuple<diseasedataarrange.DdrRowGroup, System.Collections.Generic.List<diseasedataarrange.DdrData>>>;
 
+using DdrFmtFunc = System.Func<string[], string>;
+
 
 namespace diseasedataarrange
 {
@@ -446,81 +448,60 @@ namespace diseasedataarrange
             if (GenerateCSV)
             {
                 var file = GetOutputFile(@"csv\", fileName, ".csv");
-                WirteCSVFile(e, list, file);
+                WirteListToFile(e, list, file, false, WirteCSVHeader, WirteCSVLine);
             }
 
             if (GenerateDictionaryJSON)
             {
                 var file = GetOutputFile(@"djson\", fileName, ".json");
-                WirteDJSONFile(e, list, file);
+                WirteListToFile(e, list, file, true, WirteDJSONHeader, WirteDJSONLine);
             }
 
             if (GenerateArrayJSON)
             {
                 var file = GetOutputFile(@"ajson\", fileName, ".json");
-                WirteAJSONFile(e, list, file);
+                WirteListToFile(e, list, file, true, WirteAJSONHeader, WirteAJSONLine);
             }
         }
 
-
-        private void WirteCSVFile(Enum e, DdrRowList list, string file)
+        private string WirteCSVHeader(string[] names)
         {
-            Func<string[], string> funcHeader = (string[] x) =>
-            {
-                return string.Join(",", x);
-            };
-
-            Func<string[], object[], string> funcLine = (string[] names, object[] x) =>
-            {
-                return string.Join(",", x);
-            };
-            WirteListToFile(e, list, file, false, funcHeader, funcLine);
+            return DdrHelp.FormatString(names, ",", "", "", false);
         }
 
-        private void WirteAJSONFile(Enum e, DdrRowList list, string file)
+        private string WirteCSVLine(string[] names)
         {
-            Func<string[], string> funcHeader = (string[] x) =>
-            {
-                var z = x.Select(y => string.Format("\"{0}\"", y));
-                return string.Format("[{0}],", string.Join(",", z));
-            };
-
-            Func<string[], object[], string> funcLine = (string[] names, object[] x) =>
-            {
-                return string.Format("[{0}],", string.Join(",", x));
-            };
-            WirteListToFile(e, list, file, true, funcHeader, funcLine);
+            return DdrHelp.CreateStringFormat(names.Length, ",", "", "", false);
         }
 
-        private void WirteDJSONFile(Enum e, DdrRowList list, string file)
+        private string WirteAJSONHeader(string[] names)
         {
-            Func<string[], string> funcHeader = (string[] x) =>
-            {
-                return null;
-            };
-
-            Func<string[], object[], string> funcLine = (string[] names, object[] x) =>
-            {               
-                StringBuilder text = new StringBuilder(28000);
-                text.Append("{");
-                var len = names.Length;
-                for (int i = 0; i < len; i++)
-                {
-                    text.AppendFormat("{2}\"{0}\":{1}", names[i], x[i], i==0?"":",");
-                }
-                text.Append("},");
-                return text.ToString();
-            };
-            WirteListToFile(e, list, file, true, funcHeader, funcLine);
+            return DdrHelp.FormatString(names, ",", "[\n[", "],", true);
         }
 
+        private string WirteAJSONLine(string[] names)
+        {
+            return DdrHelp.CreateStringFormat(names.Length, ",", "[", "],", false);
+        }
+
+
+        private string WirteDJSONHeader(string[] names)
+        {
+            return "[";
+        }
+
+        private string WirteDJSONLine(string[] names)
+        {
+            return DdrHelp.CreateStringFormat(names, ",", "{{", "}},", false);
+        }
+        
         private void WirteListToFile(Enum e, DdrRowList list, string file, bool isJson,
-            Func<string[], string> funcHeader, Func<string[], object[], string> funcLine)
+            DdrFmtFunc funcHeader, DdrFmtFunc funcLine)
         {
             var names = DdrHelp.GetEnumNames(e);
             var props = DdrHelp.GetPropertiesByNames<DdrData>(names);
             Debug.Assert(names.Length == props.Length);
-            var csvHeader = funcHeader(names);
+            
             var nameIdx = new int[]
             {
                 //Array.IndexOf(names,"UpdateTime"),
@@ -533,15 +514,12 @@ namespace diseasedataarrange
             using (var w = new StreamWriter(file, false, Encoding.UTF8))
             {
                 w.NewLine = "\n";
-                if (isJson)
-                {
-                    w.WriteLine("[");
-                }
 
-                if (!string.IsNullOrWhiteSpace(csvHeader))
-                {
-                    w.WriteLine(csvHeader);
-                }
+                var csvHeaderText = funcHeader(names);
+                w.WriteLine(csvHeaderText);
+
+                var lineFmt = funcLine(names);
+                StringBuilder builder = new StringBuilder(18000);
 
                 var idx = 0;
                 var len = list.Count;
@@ -551,7 +529,9 @@ namespace diseasedataarrange
                     var vals = DdrHelp.GetValuseByProperties(x, props);
                     PrepareVals(isJson, nameIdx, timeIdx, vals);
 
-                    var line = funcLine(names, vals);
+                    builder.Clear();
+                    builder.AppendFormat(lineFmt, vals);
+                    var line = builder.ToString();
 
                     if (isJson && ++idx == len)
                     {
