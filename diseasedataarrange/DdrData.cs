@@ -5,29 +5,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using _DdrInt = System.Single;
+
 namespace diseasedataarrange
 {
 
     public class DdrData
+
     {
         public float? TimeOffset { get; set; }
         public string ParentName { get; set; }
-        public int? ParentConfirmedCount { get; set; }
-        public int? ParentSuspectedCount { get; set; }
-        public int? ParentCuredCount { get; set; }
-        public int? ParentDeadCount { get; set; }
+        public _DdrInt? ParentConfirmedCount { get; set; }
+        public _DdrInt? ParentSuspectedCount { get; set; }
+        public _DdrInt? ParentCuredCount { get; set; }
+        public _DdrInt? ParentDeadCount { get; set; }
         public string ChildName { get; set; }
-        public int? ChildConfirmedCount { get; set; }
-        public int? ChildSuspectedCount { get; set; }
-        public int? ChildCuredCount { get; set; }
-        public int? ChildDeadCount { get; set; }
+        public _DdrInt? ChildConfirmedCount { get; set; }
+        public _DdrInt? ChildSuspectedCount { get; set; }
+        public _DdrInt? ChildCuredCount { get; set; }
+        public _DdrInt? ChildDeadCount { get; set; }
         public DateTime? UpdateTime { get; set; }
 
         public string ParentName_ChildName
         {
             get
             {
-                return string.Format("{0}_{1}", ParentName, ChildName) ;
+                return string.Format("{0}_{1}", ParentName, ChildName);
             }
         }
 
@@ -45,7 +48,7 @@ namespace diseasedataarrange
             }
         }
 
-        public int? ParentTreatingCount
+        public _DdrInt? ParentTreatingCount
         {
             get
             {
@@ -93,7 +96,7 @@ namespace diseasedataarrange
             }
         }
 
-        public int? ChildTreatingCount
+        public _DdrInt? ChildTreatingCount
         {
             get
             {
@@ -268,15 +271,15 @@ namespace diseasedataarrange
             }
 
             ParentName = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentName);
-            ParentConfirmedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentConfirmedCount)._ParseInt();
-            ParentSuspectedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentSuspectedCount)._ParseInt();
-            ParentCuredCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentCuredCount)._ParseInt();
-            ParentDeadCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentDeadCount)._ParseInt();
+            ParentConfirmedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentConfirmedCount)._ParseFlt();
+            ParentSuspectedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentSuspectedCount)._ParseFlt();
+            ParentCuredCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentCuredCount)._ParseFlt();
+            ParentDeadCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentDeadCount)._ParseFlt();
             ChildName = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildName);
-            ChildConfirmedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildConfirmedCount)._ParseInt();
-            ChildSuspectedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildSuspectedCount)._ParseInt();
-            ChildCuredCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildCuredCount)._ParseInt();
-            ChildDeadCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildDeadCount)._ParseInt();
+            ChildConfirmedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildConfirmedCount)._ParseFlt();
+            ChildSuspectedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildSuspectedCount)._ParseFlt();
+            ChildCuredCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildCuredCount)._ParseFlt();
+            ChildDeadCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildDeadCount)._ParseFlt();
 
             return true;
         }
@@ -293,14 +296,14 @@ namespace diseasedataarrange
         public float? ParentSuspectedMax { get; set; }
         public float? ParentCuredMax { get; set; }
         public float? ParentDeadMax { get; set; }
-        public int? ParentTreatingMax { get; set; }
+        public _DdrInt? ParentTreatingMax { get; set; }
         public float? ParentDeadDivideCuredMax { get; set; }
         public float? ParentCuredDivideDeadMax { get; set; }
         public float? ChildConfirmedMax { get; set; }
         public float? ChildSuspectedMax { get; set; }
         public float? ChildCuredMax { get; set; }
         public float? ChildDeadMax { get; set; }
-        public int? ChildTreatingMax { get; set; }
+        public _DdrInt? ChildTreatingMax { get; set; }
         public float? ChildDeadDivideCuredMax { get; set; }
         public float? ChildCuredDivideDeadMax { get; set; }
 
@@ -321,6 +324,5 @@ namespace diseasedataarrange
         public float? ChildCuredDivideDeadMin { get; set; }
 
     }
-    
 
 }

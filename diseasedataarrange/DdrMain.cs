@@ -106,6 +106,17 @@ namespace diseasedataarrange
                 return false;
             }
 
+            var culture = settings.Get("Culture");
+            if (string.IsNullOrWhiteSpace(csvSeparators))
+            {
+                Console.WriteLine("app.config Culture config error!");
+                return false;
+            }
+
+            var curCulture = System.Globalization.CultureInfo.GetCultureInfo(culture);
+            System.Threading.Thread.CurrentThread.CurrentCulture = curCulture;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = curCulture;
+
             var file = settings.Get("CSVFile");
             var dirName = settings.Get("OutputDir");
             var tms = settings.Get("StartTime");            
@@ -160,6 +171,7 @@ namespace diseasedataarrange
             CSVIndexs = csvIndexs;
             DateTimeFormat = "\"{0:" + dateTimeFmt + "}\"";
             CSVSeparators = csvSeparators.ToArray();
+
             return true;
         }
 
@@ -251,6 +263,7 @@ namespace diseasedataarrange
 
             {
                 var query1 = from x in AllChildren
+                             where !string.IsNullOrWhiteSpace(x.ParentName)
                              group x by x.UpdateTime_ParentName into t
                              let minCN = t.Min(y => y.ChildName)
                              select t.First(y => y.ChildName == minCN);
@@ -264,6 +277,7 @@ namespace diseasedataarrange
 
             {
                 var query1 = from x in AllChildren
+                             where !string.IsNullOrWhiteSpace(x.ChildName)
                              group x by new
                              {
                                  x.ParentName,
@@ -295,7 +309,8 @@ namespace diseasedataarrange
 
 
             GroupChildren = (from x in AllChildren
-                          group x by new
+                             where !string.IsNullOrWhiteSpace(x.ChildName)
+                             group x by new
                           {
                               ParentName = x.ParentName,
                               ChildName = x.ChildName,

@@ -20,10 +20,33 @@ namespace diseasedataarrange
             return r;
         }
 
+        public static float? _Div(this float? a, float? b)
+        {
+            float? r = null;
+            if (b != null && b != 0 && a != null)
+            {
+                r = (float)a / b;
+            }
+            return r;
+        }
+
         public static int? _ParseInt(this string s)
         {
             int r = 0;
             if (Int32.TryParse(s, out r))
+            {
+                return r;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static float? _ParseFlt(this string s)
+        {
+            float r = 0;
+            if (float.TryParse(s, out r))
             {
                 return r;
             }
