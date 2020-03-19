@@ -47,12 +47,15 @@ namespace diseasedataarrange
         private DateTime StartTime { set; get; }
         private NameValueCollection WordReplace { set; get; }
         private char[] CSVSeparators { set; get; }
+        private string CSVDateTimeFmt { set; get; }
         private bool GenerateCSV { set; get; }
         private bool GenerateDictionaryJSON { set; get; }
         private bool GenerateArrayJSON { set; get; }
-        private int[] CSVIndexs { set; get; }
+        private int[] CSVIntIndexs { set; get; }
+        private string[] CSVStrIndexs { set; get; }
         private string DateTimeFormat { set; get; }
         private bool GenerateAllFields { set; get; }
+        private CultureInfo CurrentCulture { get; set; }
 
         private bool ParamsParse(string[] args)
         {
@@ -70,7 +73,14 @@ namespace diseasedataarrange
                 Console.WriteLine("app.config CSVIndex config error!");
                 return false;
             }
-            var csvIndexs = csvIndex.Split(',').Select(x =>
+            var csvStrIndexs = csvIndex.Split(',');
+
+            if (csvStrIndexs.Length != (int)DdrCSVIndex.CSVIndexLen)
+            {
+                Console.WriteLine("app.config CSVIndex length error!");
+                return false;
+            }
+            var cstIntIndexs = csvStrIndexs.Select(x =>
             {
                 int v = -1;
                 if (!int.TryParse(x, out v))
@@ -78,19 +88,7 @@ namespace diseasedataarrange
                     v = -1;
                 }
                 return v;
-            }
-            ).ToArray();
-            if (csvIndexs.Length != (int)DdrCSVIndex.CSVIndexLen)
-            {
-                Console.WriteLine("app.config CSVIndex length error!");
-                return false;
-            }
-
-            if (Array.IndexOf(csvIndexs, -1) != -1)
-            {
-                Console.WriteLine("app.config CSVIndex value error!");
-                return false;
-            }
+            }).ToArray();
 
             var dateTimeFmt = settings.Get("DateTimeFormat");
             if (string.IsNullOrWhiteSpace(dateTimeFmt))
@@ -106,6 +104,13 @@ namespace diseasedataarrange
                 return false;
             }
 
+            var csvDateTimeFmt = settings.Get("CSVDateTimeFmt");
+            if (string.IsNullOrWhiteSpace(csvDateTimeFmt))
+            {
+                Console.WriteLine("app.config CSVDateTimeFmt config error!");
+                return false;
+            }
+
             var culture = settings.Get("Culture");
             if (string.IsNullOrWhiteSpace(csvSeparators))
             {
@@ -116,6 +121,8 @@ namespace diseasedataarrange
             var curCulture = System.Globalization.CultureInfo.GetCultureInfo(culture);
             System.Threading.Thread.CurrentThread.CurrentCulture = curCulture;
             System.Threading.Thread.CurrentThread.CurrentUICulture = curCulture;
+
+   
 
             var file = settings.Get("CSVFile");
             var dirName = settings.Get("OutputDir");
@@ -168,10 +175,12 @@ namespace diseasedataarrange
             GenerateDictionaryJSON = jsondfmt != "0";
             GenerateAllFields = gaf != "0";
             WordReplace = wordReplase;
-            CSVIndexs = csvIndexs;
+            CSVIntIndexs = cstIntIndexs;
+            CSVStrIndexs = csvStrIndexs;
             DateTimeFormat = "\"{0:" + dateTimeFmt + "}\"";
             CSVSeparators = csvSeparators.ToArray();
-
+            CSVDateTimeFmt = csvDateTimeFmt;
+            CurrentCulture = curCulture;
             return true;
         }
 
@@ -210,13 +219,16 @@ namespace diseasedataarrange
         private void GetCSVRecords()
         {
             var lines = GetCSVFileLines();
+            var dateTimeFmt = this.CSVDateTimeFmt;
+            var info = this.CurrentCulture;
 
             DdrRowList list = new DdrRowList();
             var i = 0;
             var error = 0;
 
-            var maxLen = CSVIndexs.Max() + 1;
+            var maxLen = CSVIntIndexs.Max() + 1;
             var item = new DdrData();
+            var ret = 0;
             foreach (var s in lines)
             {
                 i++;
@@ -224,7 +236,8 @@ namespace diseasedataarrange
                 {
                     continue;
                 }
-                if (item.DXYDataParse(s, CSVSeparators, maxLen, CSVIndexs))
+                ret = item.DXYDataParse(s, CSVSeparators, maxLen, CSVIntIndexs, CSVStrIndexs, dateTimeFmt, info);
+                if (ret == 0)
                 {
                     list.Add(item);
                     item = new DdrData();
@@ -232,7 +245,7 @@ namespace diseasedataarrange
                 else if (i != 1)
                 {
                     error++;
-                    Console.WriteLine("line {0} parse error!", i);
+                    Console.WriteLine("line {0} parse error {1}! ", i, ret);
                 }
             }
 

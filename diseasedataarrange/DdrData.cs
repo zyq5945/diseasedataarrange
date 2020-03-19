@@ -14,17 +14,30 @@ namespace diseasedataarrange
 
     {
         public float? TimeOffset { get; set; }
-        public string ParentName { get; set; }
-        public _DdrInt? ParentConfirmedCount { get; set; }
-        public _DdrInt? ParentSuspectedCount { get; set; }
-        public _DdrInt? ParentCuredCount { get; set; }
-        public _DdrInt? ParentDeadCount { get; set; }
-        public string ChildName { get; set; }
-        public _DdrInt? ChildConfirmedCount { get; set; }
-        public _DdrInt? ChildSuspectedCount { get; set; }
-        public _DdrInt? ChildCuredCount { get; set; }
-        public _DdrInt? ChildDeadCount { get; set; }
-        public DateTime? UpdateTime { get; set; }
+
+        private string _ParentName;
+        public string ParentName { set { _ParentName = value; } get { return _ParentName; } }
+        private _DdrInt? _ParentConfirmedCount;
+        public _DdrInt? ParentConfirmedCount { set { _ParentConfirmedCount = value; } get { return _ParentConfirmedCount; } }
+        private _DdrInt? _ParentSuspectedCount;
+        public _DdrInt? ParentSuspectedCount { set { _ParentSuspectedCount = value; } get { return _ParentSuspectedCount; } }
+        private _DdrInt? _ParentCuredCount;
+        public _DdrInt? ParentCuredCount { set { _ParentCuredCount = value; } get { return _ParentCuredCount; } }
+        private _DdrInt? _ParentDeadCount;
+        public _DdrInt? ParentDeadCount { set { _ParentDeadCount = value; } get { return _ParentDeadCount; } }
+        private string _ChildName;
+        public string ChildName { set { _ChildName = value; } get { return _ChildName; } }
+        private _DdrInt? _ChildConfirmedCount;
+        public _DdrInt? ChildConfirmedCount { set { _ChildConfirmedCount = value; } get { return _ChildConfirmedCount; } }
+        private _DdrInt? _ChildSuspectedCount;
+        public _DdrInt? ChildSuspectedCount { set { _ChildSuspectedCount = value; } get { return _ChildSuspectedCount; } }
+        private _DdrInt? _ChildCuredCount;
+        public _DdrInt? ChildCuredCount { set { _ChildCuredCount = value; } get { return _ChildCuredCount; } }
+        private _DdrInt? _ChildDeadCount;
+        public _DdrInt? ChildDeadCount { set { _ChildDeadCount = value; } get { return _ChildDeadCount; } }
+        private DateTime? _UpdateTime;
+        public DateTime? UpdateTime { set { _UpdateTime = value; } get { return _UpdateTime; } }
+
 
         public string ParentName_ChildName
         {
@@ -47,7 +60,6 @@ namespace diseasedataarrange
                 return string.Format("{0:D20}_{1}", ticks, ParentName);
             }
         }
-
         public _DdrInt? ParentTreatingCount
         {
             get
@@ -256,37 +268,59 @@ namespace diseasedataarrange
             ChildCuredDivideDeadNorm = ChildCuredDivideDead._Norm(group.ChildCuredDivideDeadMin, group.ChildCuredDivideDeadMax);
         }
 
-        public bool DXYDataParse(string line, char[] csvSeparators, int maxLen, int[] indexs)
+        public int DXYDataParse(string line, char[] csvSeparators, int maxLen, int[] intIndexs, string[] strIndexs, string dateTimeFmt, System.Globalization.CultureInfo info)
         {
             var cols = line.Split(csvSeparators);
             if (cols.Length < maxLen)
             {
-                return false;
+                return maxLen;
             }
 
-            UpdateTime = GetCSVColsVal(cols, indexs, DdrCSVIndex.UpdateTime)._ParseDateTime();
-            if (UpdateTime == null)
+            var ret = 0;
+
+            ret = ColPareseVal(ref _UpdateTime, cols, intIndexs, strIndexs, DdrCSVIndex.UpdateTime, dateTimeFmt, info);
+            if (ret != 0 )
             {
-                return false;
+                return ret;
             }
 
-            ParentName = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentName);
-            ParentConfirmedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentConfirmedCount)._ParseFlt();
-            ParentSuspectedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentSuspectedCount)._ParseFlt();
-            ParentCuredCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentCuredCount)._ParseFlt();
-            ParentDeadCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ParentDeadCount)._ParseFlt();
-            ChildName = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildName);
-            ChildConfirmedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildConfirmedCount)._ParseFlt();
-            ChildSuspectedCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildSuspectedCount)._ParseFlt();
-            ChildCuredCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildCuredCount)._ParseFlt();
-            ChildDeadCount = GetCSVColsVal(cols, indexs, DdrCSVIndex.ChildDeadCount)._ParseFlt();
+            System.Diagnostics.Debug.Assert(UpdateTime != null);
 
-            return true;
+            ret = ColPareseVal(ref _ParentName, cols, intIndexs,  strIndexs,DdrCSVIndex.ParentName, dateTimeFmt, info);
+            ret = ColPareseVal(ref _ParentConfirmedCount, cols, intIndexs,  strIndexs,DdrCSVIndex.ParentConfirmedCount, dateTimeFmt, info);
+            ret = ColPareseVal(ref _ParentSuspectedCount, cols, intIndexs,  strIndexs,DdrCSVIndex.ParentSuspectedCount, dateTimeFmt, info);
+            ret = ColPareseVal(ref _ParentCuredCount, cols, intIndexs,  strIndexs,DdrCSVIndex.ParentCuredCount, dateTimeFmt, info);
+            ret = ColPareseVal(ref _ParentDeadCount, cols, intIndexs,  strIndexs,DdrCSVIndex.ParentDeadCount, dateTimeFmt, info);
+            ret = ColPareseVal(ref _ChildName, cols, intIndexs,  strIndexs,DdrCSVIndex.ChildName, dateTimeFmt, info);
+            ret = ColPareseVal(ref _ChildConfirmedCount, cols, intIndexs,  strIndexs,DdrCSVIndex.ChildConfirmedCount, dateTimeFmt, info);
+            ret = ColPareseVal(ref _ChildSuspectedCount, cols, intIndexs,  strIndexs,DdrCSVIndex.ChildSuspectedCount, dateTimeFmt, info);
+            ret = ColPareseVal(ref _ChildCuredCount, cols, intIndexs,  strIndexs,DdrCSVIndex.ChildCuredCount, dateTimeFmt, info);
+            ret = ColPareseVal(ref _ChildDeadCount, cols, intIndexs,  strIndexs,DdrCSVIndex.ChildDeadCount, dateTimeFmt, info);
+
+            return 0;
         }
 
         private static string GetCSVColsVal(string[] cols, int[] indexs, DdrCSVIndex e)
         {
             return cols[indexs[(int)e]];
+        }
+
+        private static int ColPareseVal(ref _DdrInt? t, string[] cols, int[] intIndexs, string[] strIndexs, DdrCSVIndex e, string fmt, System.Globalization.CultureInfo info)
+        {
+            return DdrHelp._Parse(ref t, GetCSVColsVal(cols, intIndexs, e)) ? 0: 1 + (int)e;
+        }
+
+        private static int ColPareseVal(ref DateTime? t, string[] cols, int[] intIndexs, string[] strIndexs, DdrCSVIndex e, string fmt, System.Globalization.CultureInfo info)
+        {
+            return DdrHelp._Parse(ref t, GetCSVColsVal(cols, intIndexs, e), fmt, info) ? 0 : 1 + (int)e;
+        }
+
+        private static int ColPareseVal(ref string t, string[] cols, int[] intIndexs, string[] strIndexs, DdrCSVIndex e, string fmt, System.Globalization.CultureInfo info)
+        {
+            var index = intIndexs[(int)e];
+            fmt = index == -1 ? strIndexs[(int)e] : null;
+            var v = index != -1 ? GetCSVColsVal(cols, intIndexs, e) : null;
+            return DdrHelp._Parse(ref t, v, fmt, cols) ? 0 : 1 + (int)e;
         }
     }
 

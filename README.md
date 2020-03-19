@@ -55,12 +55,14 @@ mono "/xxxx/path to/diseasedataarrange.exe" "/xxxx/path to/DXYArea.csv" "/xxxx/p
 | OutputDir | ./ | 默认的输出文件目录，会被命令行第二个参数覆盖 |
 | StartTime | 2020/1/24 | 数据的开始计算时间，对应TimeOffset字段的浮点数值 |
 | CSVIndex | 14,0,6,7,8,9,3,10,11,12,13 | CSV数据字段对应索引，从0计数，依次为“更新时间,父名称,父确诊数,父疑似数,父康复数,父死亡数,子名称,子确诊数,子疑似数,子康复数,子死亡数” |
+| CSVDateTimeFmt | yyyy-MM-dd HH:mm:ss | CSV数据日期时间字段格式 |
 | CSVSeparators | ,;\t | CSV数据字段的分隔符，\t可用“&#x9;”来表示 |
 | GenerateCSV | 1| 是否生成CSV文件，0为不生成，1为生成 |
 | GenerateDictionaryJSON | 0 | 是否生成字典形式JSON文件，0为不生成，1为生成 |
 | GenerateArrayJSON | 0 | 是否生成数组形式JSON文件，0为不生成，1为生成 |
 | GenerateAllFields | 0 | 是否生成所有字段数据，0为不生成，1为生成 |
 | DateTimeFormat | yyyy-MM-dd HH:mm:ss.fff| 生成的UpdateTime字段时间数据格式 |
+| Culture | zh-CN | 当前程序要使用的Culture，中文是en-US，英文是en-US，影响字符串排序 |
 
 #### 3.2configuration/wordReplace配置字段说明
 

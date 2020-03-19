@@ -56,10 +56,10 @@ namespace diseasedataarrange
             }
         }
 
-        public static DateTime? _ParseDateTime(this string s)
+        public static DateTime? _ParseDateTime(this string s, string fmt, System.Globalization.CultureInfo info)
         {
             DateTime r = new DateTime();
-            if (DateTime.TryParse(s, out r))
+            if (DateTime.TryParseExact(s, fmt, info, System.Globalization.DateTimeStyles.None, out r))
             {
                 return r;
             }
@@ -69,7 +69,22 @@ namespace diseasedataarrange
             }
         }
 
-        public static bool _Parse(this int? v, string s)
+        public static bool _Parse(ref DateTime? tm, string s, string fmt, System.Globalization.CultureInfo info)
+        {
+            DateTime r = new DateTime();
+            if (DateTime.TryParseExact(s, fmt, info, System.Globalization.DateTimeStyles.None, out r))
+            {
+                tm = r;
+                return true;
+            }
+            else
+            {
+                tm = null;
+                return false;
+            }
+        }
+
+        public static bool _Parse(ref int? v, string s)
         {
             int r = 0;
             if (Int32.TryParse(s, out r))
@@ -82,6 +97,29 @@ namespace diseasedataarrange
                 v = null;
                 return false;
             }
+        }
+
+        public static bool _Parse(ref float? v, string s)
+        {
+            float r = 0;
+            if (float.TryParse(s, out r))
+            {
+                v = r;
+                return true;
+            }
+            else
+            {
+                v = null;
+                return false;
+            }
+        }
+
+        public static bool _Parse(ref string v, string s, string fmt, string[] cols)
+        {
+            v = string.IsNullOrWhiteSpace(fmt)? 
+                s : 
+                string.Format(fmt, cols);
+            return string.IsNullOrWhiteSpace(v);
         }
 
         public static float? _Norm(this float? v, float? min, float? max)

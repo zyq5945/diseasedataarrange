@@ -29,8 +29,9 @@ namespace diseasedataarrange
             catch (Exception e)
             {
                 Console.WriteLine("error:{0}", e.Message);
-#if MY_DUBUG
+#if DEBUG
                 Console.WriteLine("detail:{0}", e.ToString());
+                Console.Read();
 #endif
             }
 
