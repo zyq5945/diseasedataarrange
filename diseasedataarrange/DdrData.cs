@@ -112,7 +112,7 @@ namespace diseasedataarrange
         {
             get
             {
-                return ParentDeadDivideCured._CalcRate();
+                return ParentDeadCount._CalcRate(ParentCuredCount);
             }
         }
 
@@ -120,7 +120,7 @@ namespace diseasedataarrange
         {
             get
             {
-                return ParentCuredDivideDead._CalcRate();
+                return ParentCuredCount._CalcRate(ParentDeadCount);
             }
         }
 
@@ -220,7 +220,7 @@ namespace diseasedataarrange
         {
             get
             {
-                return ChildDeadDivideCured._CalcRate();
+                return ChildDeadCount._CalcRate(ChildCuredCount);
             }
         }
 
@@ -228,7 +228,7 @@ namespace diseasedataarrange
         {
             get
             {
-                return ChildCuredDivideDead._CalcRate();
+                return ChildCuredCount._CalcRate(ChildDeadCount);
             }
         }
 

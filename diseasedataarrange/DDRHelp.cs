@@ -199,11 +199,11 @@ namespace diseasedataarrange
             return text.ToString();
         }
 
-        public static float? _CalcRate(this float? v)
+        public static float? _CalcRate(this float? v, float? v1)
         {
             if (v != null)
             {
-                return v / (v+1.0f);
+                return v._Div(v+ v1);
             }
             else
             {
