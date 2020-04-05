@@ -278,7 +278,7 @@ namespace diseasedataarrange
                 var query1 = from x in AllChildren
                              where !string.IsNullOrWhiteSpace(x.ParentName)
                              group x by x.UpdateTime_ParentName into t
-                             let maxCC = t.Min(y => y.ParentConfirmedCount)
+                             let maxCC = t.Max(y => y.ParentConfirmedCount)
                              select t.First(y => y.ParentConfirmedCount == maxCC);
 
                 var query2 = from x in query1
