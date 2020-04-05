@@ -226,7 +226,7 @@ namespace diseasedataarrange
             var i = 0;
             var error = 0;
 
-            var maxLen = CSVIntIndexs.Max() + 1;
+            var maxLen = Math.Max(CSVIntIndexs.Max(), DdrHelp.MaxFmtStrIndex(string.Join(",", CSVStrIndexs))) + 1;
             var item = new DdrData();
             var ret = 0;
             foreach (var s in lines)
@@ -278,8 +278,8 @@ namespace diseasedataarrange
                 var query1 = from x in AllChildren
                              where !string.IsNullOrWhiteSpace(x.ParentName)
                              group x by x.UpdateTime_ParentName into t
-                             let minCN = t.Min(y => y.ChildName)
-                             select t.First(y => y.ChildName == minCN);
+                             let maxCC = t.Min(y => y.ParentConfirmedCount)
+                             select t.First(y => y.ParentConfirmedCount == maxCC);
 
                 var query2 = from x in query1
                              orderby x.ParentName ascending, x.UpdateTime ascending

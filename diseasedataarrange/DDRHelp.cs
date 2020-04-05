@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace diseasedataarrange
@@ -198,6 +199,18 @@ namespace diseasedataarrange
             return text.ToString();
         }
 
+        public static float? _CalcRate(this float? v)
+        {
+            if (v != null)
+            {
+                return v / (v+1.0f);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public  static string CreateStringFormat(string[] names, string separator, string start, string end, bool allQuo, params int[] quoIdxs)
         {
             int len = names.Length;
@@ -216,6 +229,34 @@ namespace diseasedataarrange
 
             return text.ToString();
         }
+
+        public static int MaxFmtStrIndex(string str)
+        {
+            Regex regex = new Regex(@"(?<=\{)[^}]*(?=\})", RegexOptions.IgnoreCase);
+            MatchCollection matches = regex.Matches(str);
+            if (matches.Count != 0)
+            {
+                var val = matches.Cast<Match>()
+                    .Select(m => m.Value.Split(':').FirstOrDefault().Trim())
+                    .Distinct()
+                    .Select(x =>
+                    {
+                        int v = 0;
+                        if (!int.TryParse(x, out v))
+                        {
+                            v = 0;
+                        }
+                        return v;
+                    }).Max();
+
+                return val;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
     }
     
 }

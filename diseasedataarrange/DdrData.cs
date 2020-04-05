@@ -206,8 +206,8 @@ namespace diseasedataarrange
         public float? ParentDeadNorm { get; set; }
         public float? ParentTreatingNorm { get; set; }
 
-        public float? ParentDeadDivideCuredNorm { get; set; }
-        public float? ParentCuredDivideDeadNorm { get; set; }
+        public float? ParentDeadRateEx { get; set; }
+        public float? ParentCuredRateEx { get; set; }
 
         public float? ParentTatalConfirmedNorm { get; set; }
         public float? ParentTatalSuspectedNorm { get; set; }
@@ -221,8 +221,8 @@ namespace diseasedataarrange
         public float? ChildDeadNorm { get; set; }
         public float? ChildTreatingNorm { get; set; }
 
-        public float? ChildDeadDivideCuredNorm { get; set; }
-        public float? ChildCuredDivideDeadNorm { get; set; }
+        public float? ChildDeadRateEx { get; set; }
+        public float? ChildCuredRateEx { get; set; }
 
         public float? ChildTatalConfirmedNorm { get; set; }
         public float? ChildTatalSuspectedNorm { get; set; }
@@ -253,8 +253,8 @@ namespace diseasedataarrange
             ParentCuredNorm = ParentCuredCount._Div(last.ParentCuredCount);
             ParentDeadNorm = ParentDeadCount._Div(last.ParentDeadCount);
             ParentTreatingNorm = ParentTreatingCount._Div(group.ParentTreatingMax);
-            ParentDeadDivideCuredNorm = ParentDeadDivideCured._Norm(group.ParentDeadDivideCuredMin, group.ParentDeadDivideCuredMax);
-            ParentCuredDivideDeadNorm = ParentCuredDivideDead._Norm(group.ParentCuredDivideDeadMin, group.ParentCuredDivideDeadMax);
+            ParentDeadRateEx = ParentDeadDivideCured._CalcRate();
+            ParentCuredRateEx = ParentCuredDivideDead._CalcRate();
         }
 
         public void FillDataByLastChild(DdrData last, DdrRowGroup group)
@@ -264,8 +264,8 @@ namespace diseasedataarrange
             ChildCuredNorm = ChildCuredCount._Div(last.ChildCuredCount);
             ChildDeadNorm = ChildDeadCount._Div(last.ChildDeadCount);
             ChildTreatingNorm = ChildTreatingCount._Div(group.ChildTreatingMax);
-            ChildDeadDivideCuredNorm = ChildDeadDivideCured._Norm(group.ChildDeadDivideCuredMin, group.ChildDeadDivideCuredMax);
-            ChildCuredDivideDeadNorm = ChildCuredDivideDead._Norm(group.ChildCuredDivideDeadMin, group.ChildCuredDivideDeadMax);
+            ChildDeadRateEx = ChildDeadDivideCured._CalcRate();
+            ChildCuredRateEx = ChildCuredDivideDead._CalcRate();
         }
 
         public int DXYDataParse(string line, char[] csvSeparators, int maxLen, int[] intIndexs, string[] strIndexs, string dateTimeFmt, System.Globalization.CultureInfo info)
